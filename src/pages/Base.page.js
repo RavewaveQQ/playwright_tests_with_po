@@ -19,5 +19,6 @@ export class BasePage {
 
     async navigate() {
         await this.page.goto(this.url);
+        await this.page.waitForLoadState('load');
     }
 }

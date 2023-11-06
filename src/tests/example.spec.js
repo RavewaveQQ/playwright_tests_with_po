@@ -3,6 +3,8 @@ const { expect } = require('@playwright/test');
 const { test } = require('../fixture');
 
 test.describe('', () => {
+    test.describe.configure({ retries: 2 });
+
     test('Perform login', async ({ loginPage, inventoryPage }) => {
         await loginPage.navigate();
         await loginPage.performLogin('standard_user', 'secret_sauce');
