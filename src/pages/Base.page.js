@@ -1,8 +1,15 @@
 export class BasePage {
     url = '';
 
+    /**
+ * @type {Page}
+ */
     page;
 
+    /**
+ *
+ * @param {*} page
+ */
     constructor(page) {
         this.page = page;
     }
