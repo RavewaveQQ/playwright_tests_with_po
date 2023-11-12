@@ -32,14 +32,11 @@ export class InventoryPage extends BaseSwagLabPage {
 
     async addRandomProducts(amountProducts) {
         const selectedItem = [];
-        const item = await this.inventoryItems.all();
-
         while (selectedItem.length < amountProducts) {
-            const randomItem = Math.floor(Math.random() * item.length - 1);
-            if (!selectedItem.includes(randomItem)) {
-                selectedItem.push(randomItem);
-                await this.addItemToCartById(randomItem);
-            }
+            const item = await this.addItemToCartBtns.all();
+            const randomItem = Math.floor(Math.random() * item.length);
+            selectedItem.push(randomItem);
+            await this.addItemToCartById(randomItem);
         }
     }
 
