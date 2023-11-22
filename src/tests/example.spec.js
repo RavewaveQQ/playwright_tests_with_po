@@ -1,22 +1,18 @@
-// @ts-check
 const { expect } = require('@playwright/test');
 const { test } = require('../fixture');
+const {faker} = require('@faker-js/faker')
+const {numberOfProducts} = require('../utils/randomNumber')
 
-test.describe('', () => {
 
-    test('Perform login', async ({ loginPage, inventoryPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-
-        await expect(inventoryPage.headerTitle).toBeVisible();
-
-        expect(await inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
+test.describe('Swag Labs purchase flow', () => {
+    test.beforeEach('Pre-login for tests', async ({loginPage, inventoryPage}) => {
+            await loginPage.navigate();
+            await loginPage.performLogin('standard_user', 'secret_sauce');
+            await expect(inventoryPage.headerTitle).toBeVisible();
+            expect(await inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
     });
 
-    test('Add and remove product from the cart', async ({ inventoryPage, shopingCartPage, loginPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-
+    test('Add and remove product from the cart', async ({ inventoryPage, shopingCartPage}) => {
         await inventoryPage.addItemToCartById(0);
         expect(await inventoryPage.getNumberOfItemsInCart()).toBe('1');
 
@@ -27,10 +23,7 @@ test.describe('', () => {
         await expect(shopingCartPage.cartItems).not.toBeAttached();
     });
 
-    test('Perform and verify sorting on the Inventory page', async ({ inventoryPage, loginPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-
+    test('Should have correct basic sorting list on the Inventory page', async ({ inventoryPage}) => {
         await test.step('Sorting products list', async () => {
             await inventoryPage.sortingBtn.click();
 
@@ -40,46 +33,53 @@ test.describe('', () => {
                 'Name (Z to A)',
                 'Price (low to high)',
                 'Price (high to low)']);
-
-            await inventoryPage.switchSorting('hilo');
-        });
-        const list = inventoryPage.itemsPrice;
-        const firstItem = await inventoryPage.inventoryItemsName.first().textContent();
-
-        await test.step('Check the order items from High to Low', async () => {
-            if (firstItem === 'Sauce Labs Fleece Jacket') {
-                await inventoryPage.validateChosenProducts(list);
-            }
         });
     });
 
-    test('Verification products in Shopping cart', async ({ inventoryPage, shopingCartPage, loginPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
 
-        await inventoryPage.addRandomProducts(6);
+    const sortingOptions = [`az`, 'za', 'lohi', 'hilo']
+
+    for (const option of sortingOptions) {
+        test(`Should correct sorting with type: ${option}`, async ({inventoryPage}) => {
+        await inventoryPage.sortingBtn.click();
+        await inventoryPage.switchSorting(option);
+
+        const list = await inventoryPage.itemsPrice;
+        const priceList = await inventoryPage.chosenProducts(list);
+
+        priceList.forEach(async (data, index) => {
+            await expect(list.nth(index)).toHaveText(data);
+        });
+    })}
+    
+    test('Verification products in Shopping cart', async ({ inventoryPage, shopingCartPage }) => {
+        await inventoryPage.addRandomProducts(numberOfProducts());
         await shopingCartPage.openShoppingCart();
 
         await test.step('Should products are displayed correctly', async () => {
             const productsInCart = await shopingCartPage.cartItems;
-            await inventoryPage.validateChosenProducts(productsInCart);
+            const productData = await inventoryPage.chosenProducts(productsInCart);
+
+            productData.forEach(async (data, index) => {
+                await expect(productsInCart.nth(index)).toHaveText(data);
+            });
         });
     });
 
-    test('Should calculate total price after checkout', async ({
-        loginPage, inventoryPage, shopingCartPage, checkoutPage,
-    }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-
-        await inventoryPage.addRandomProducts(3);
+    test('Should calculate total price after checkout', async ({inventoryPage, shopingCartPage, checkoutPage}) => {
+        await inventoryPage.addRandomProducts(numberOfProducts());
         await shopingCartPage.openShoppingCart();
 
         await shopingCartPage.checkoutBtn.click();
-        await checkoutPage.fillingCheckoutForm('John', 'Dow', '12345678');
+        await checkoutPage.fillingCheckoutForm(faker.person.firstName(), faker.person.lastName(), faker.location.zipCode());
 
         const productsInCart = await shopingCartPage.cartItems;
-        await inventoryPage.validateChosenProducts(productsInCart);
+        
+        const productData = await inventoryPage.chosenProducts(productsInCart)
+        productData.forEach(async (data, index) => {
+            await expect(productsInCart.nth(index)).toHaveText(data);
+        });
+
 
         const priceList = await checkoutPage.itemPrice;
 

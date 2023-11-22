@@ -40,12 +40,12 @@ export class InventoryPage extends BaseSwagLabPage {
         }
     }
 
-    async validateChosenProducts(chosenProductsArray) {
+    async chosenProducts(chosenProductsArray) {
+        let productData = [];
         for (const product of await chosenProductsArray.all()) {
-            let counterIds = 0;
-            const eachItem = await product.nth(counterIds).textContent();
-            await expect(product.nth(counterIds)).toHaveText(eachItem);
-            counterIds += 1;
+            const eachItem = await product.textContent();
+            productData.push(eachItem);
         }
+        return productData;
     }
 }
