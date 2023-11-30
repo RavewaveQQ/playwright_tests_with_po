@@ -1,7 +1,7 @@
 const { expect } = require('@playwright/test');
 const { test } = require('../fixture');
 const {faker} = require('@faker-js/faker')
-const {numberOfProducts} = require('../utils/randomNumber')
+const {getRandomNumberOfProducts} = require('../utils/randomNumber')
 
 
 test.describe('Swag Labs purchase flow', () => {
@@ -45,7 +45,7 @@ test.describe('Swag Labs purchase flow', () => {
         await inventoryPage.switchSorting(option);
 
         const list = await inventoryPage.itemsPrice;
-        const priceList = await inventoryPage.chosenProducts(list);
+        const priceList = await inventoryPage.getDataOfChosenProducts(list);
 
         priceList.forEach(async (data, index) => {
             await expect(list.nth(index)).toHaveText(data);
@@ -53,12 +53,12 @@ test.describe('Swag Labs purchase flow', () => {
     })}
     
     test('Verification products in Shopping cart', async ({ inventoryPage, shopingCartPage }) => {
-        await inventoryPage.addRandomProducts(numberOfProducts());
+        await inventoryPage.addRandomProducts(getRandomNumberOfProducts());
         await shopingCartPage.openShoppingCart();
 
         await test.step('Should products are displayed correctly', async () => {
             const productsInCart = await shopingCartPage.cartItems;
-            const productData = await inventoryPage.chosenProducts(productsInCart);
+            const productData = await inventoryPage.getDataOfChosenProducts(productsInCart);
 
             productData.forEach(async (data, index) => {
                 await expect(productsInCart.nth(index)).toHaveText(data);
@@ -67,7 +67,7 @@ test.describe('Swag Labs purchase flow', () => {
     });
 
     test('Should calculate total price after checkout', async ({inventoryPage, shopingCartPage, checkoutPage}) => {
-        await inventoryPage.addRandomProducts(numberOfProducts());
+        await inventoryPage.addRandomProducts(getRandomNumberOfProducts());
         await shopingCartPage.openShoppingCart();
 
         await shopingCartPage.checkoutBtn.click();
@@ -75,7 +75,7 @@ test.describe('Swag Labs purchase flow', () => {
 
         const productsInCart = await shopingCartPage.cartItems;
         
-        const productData = await inventoryPage.chosenProducts(productsInCart)
+        const productData = await inventoryPage.getDataOfChosenProducts(productsInCart)
         productData.forEach(async (data, index) => {
             await expect(productsInCart.nth(index)).toHaveText(data);
         });
@@ -83,7 +83,7 @@ test.describe('Swag Labs purchase flow', () => {
 
         const priceList = await checkoutPage.itemPrice;
 
-        const checkOutAmount = await checkoutPage.totalAmount(priceList);
+        const checkOutAmount = await checkoutPage.calculateTotalAmount(priceList);
         const priceTotal = await checkoutPage.priceTotal.textContent();
         expect(checkOutAmount).toEqual(priceTotal);
     });

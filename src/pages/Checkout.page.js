@@ -26,7 +26,7 @@ export class CheckOutPage extends BaseSwagLabPage {
         await this.continueBtn.click();
     }
 
-    async totalAmount(checkOutCartItem) {
+    async calculateTotalAmount(checkOutCartItem) {
         let totalSum = 0;
         for (const item of await checkOutCartItem.all()) {
             const counterIds = 0;

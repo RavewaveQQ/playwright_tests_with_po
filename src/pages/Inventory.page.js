@@ -40,7 +40,7 @@ export class InventoryPage extends BaseSwagLabPage {
         }
     }
 
-    async chosenProducts(chosenProductsArray) {
+    async getDataOfChosenProducts(chosenProductsArray) {
         let productData = [];
         for (const product of await chosenProductsArray.all()) {
             const eachItem = await product.textContent();
