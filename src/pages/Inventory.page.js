@@ -4,7 +4,7 @@ const { BaseSwagLabPage } = require('./BaseSwagLab.page');
 export class InventoryPage extends BaseSwagLabPage {
     url = '/inventory.html';
 
-    get headerTitle() { return this.page.locator('.title'); } //
+    get headerTitle() { return this.page.locator('.title'); }
 
     get sortingBtn() { return this.page.locator('[data-test="product_sort_container"]'); }
 
@@ -14,38 +14,64 @@ export class InventoryPage extends BaseSwagLabPage {
 
     get itemsPrice() { return this.page.locator('.inventory_item_price'); }
 
-    get addItemToCartBtns() { return this.page.locator('[id^="add-to-cart"]'); }
+    get itemDescription() {return this.page.locator('[class$="inventory_item_desc"]')}
+
+    get addItemToCartBtns() { return this.page.locator('button[class^="btn btn"]'); }
 
     get cartItem() { return this.page.locator('.cart_item'); }
 
     async addItemToCartById(id) {
         await this.addItemToCartBtns.nth(id).click();
-    }
+    };
 
     async getItemFromCartById(id) {
         await this.cartItem.nth(id);
-    }
+    };
 
     async switchSorting(sortType) {
         await this.sortingBtn.selectOption(sortType);
-    }
+    };
 
     async addRandomProducts(amountProducts) {
         const selectedItem = [];
+        const addedIds = []
+        const allItemBtn = await this.addItemToCartBtns.all();
+        
         while (selectedItem.length < amountProducts) {
-            const item = await this.addItemToCartBtns.all();
-            const randomItem = Math.floor(Math.random() * item.length);
-            selectedItem.push(randomItem);
+            const randomItem = Math.floor(Math.random() * allItemBtn.length);
+            if (!addedIds.includes(randomItem)) {
+            selectedItem.push({
+                name: await this.getNameItemById(randomItem),
+                desc: await this.getDescriptionItemById(randomItem),
+                price: await this.getPriceItemById(randomItem)
+            });
+            addedIds.push(randomItem)
             await this.addItemToCartById(randomItem);
-        }
-    }
+            }
+        };
+        return selectedItem;
+    };
 
-    async getDataOfChosenProducts(chosenProductsArray) {
-        let productData = [];
-        for (const product of await chosenProductsArray.all()) {
-            const eachItem = await product.textContent();
-            productData.push(eachItem);
-        }
-        return productData;
-    }
-}
+    async getNameItemById(id){
+        return await this.inventoryItemsName.nth(id).textContent();
+    };
+
+    async getDescriptionItemById(id){
+        return await this.itemDescription.nth(id).textContent();
+    };
+
+    async getPriceItemById(id){
+        return await this.itemsPrice.nth(id).textContent();
+    };
+
+    async getTitleOfProducts(selectedProductsTitles){
+        const productTitles = await selectedProductsTitles.all();
+        return Promise.all(productTitles.map(async title => await title.textContent()))
+    };
+
+    async getAllTextDataOfChosenProducts(selectedProducts) {
+        const products = await selectedProducts.all();
+        return Promise.all(products.map(async product => await product.textContent())
+        );
+    };
+};

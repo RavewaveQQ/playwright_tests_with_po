@@ -36,6 +36,6 @@ export class CheckOutPage extends BaseSwagLabPage {
         }
         const orderTax = (totalSum * 0.08).toFixed(2);
         const total = (totalSum + parseFloat(orderTax));
-        return `Total: $${total.toFixed(2)}`;
+        return total.toFixed(2);
     }
 }
