@@ -37,20 +37,26 @@ test.describe('Swag Labs purchase flow', () => {
     });
 
 
-    const sortingOptions = [`az`, 'za', 'lohi', 'hilo']
+    const sortingType = [
+        {sortingOption: `az`, getExpectedResult:(actualResult) =>  actualResult.sort((a, b) => a - b)}, 
+        {sortingOption:'za', getExpectedResult:(actualResult) => actualResult.sort((a, b) => b - a)},
+        {sortingOption:'lohi', getExpectedResult:(actualResult) => actualResult.sort((a, b) => a - b)}, 
+        {sortingOption:'hilo', getExpectedResult:(actualResult) => actualResult.sort((a, b) => b - a)},
+    ];
 
-    for (const option of sortingOptions) {
-        test(`Should correct sorting with type: ${option}`, async ({inventoryPage}) => {
+    for (const option of sortingType) {
+        test(`Should correct sorting with type:${option.sortingOption}`, async ({inventoryPage}) => {
         await inventoryPage.sortingBtn.click();
-        await inventoryPage.switchSorting(option);
+        await inventoryPage.switchSorting(option.sortingOption);
 
-        const list = await inventoryPage.itemsPrice;
-        const priceList = await inventoryPage.getAllTextDataOfChosenProducts(list);
+        const actualResult = (option.sortingOption === 'az' || option.sortingOption === 'za'
+            ? await inventoryPage.getAllTitleOfProducts()
+            : await inventoryPage.getAllPriceOfProducts())
 
-        priceList.forEach(async (data, index) => {
-            await expect(list.nth(index)).toHaveText(data);
-        });
-    })}
+            const expectedResult = await option.getExpectedResult(actualResult)
+            expect(actualResult).toEqual(expectedResult)
+    })
+}
     
     test('Verification products in Shopping cart', async ({ inventoryPage, shopingCartPage }) => {
         const selectedItems = await inventoryPage.addRandomProducts(getRandomNumberOfProducts());

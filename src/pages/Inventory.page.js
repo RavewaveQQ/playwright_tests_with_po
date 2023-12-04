@@ -64,14 +64,12 @@ export class InventoryPage extends BaseSwagLabPage {
         return await this.itemsPrice.nth(id).textContent();
     };
 
-    async getTitleOfProducts(selectedProductsTitles){
-        const productTitles = await selectedProductsTitles.all();
+    async getAllTitleOfProducts(){
+        const productTitles = await this.inventoryItemsName.all();
         return Promise.all(productTitles.map(async title => await title.textContent()))
     };
-
-    async getAllTextDataOfChosenProducts(selectedProducts) {
-        const products = await selectedProducts.all();
-        return Promise.all(products.map(async product => await product.textContent())
-        );
+    async getAllPriceOfProducts(){
+        const productPrices = await this.itemsPrice.all();
+        return Promise.all(productPrices.map(async price => await price.textContent()))
     };
 };
