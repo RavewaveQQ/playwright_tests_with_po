@@ -26,13 +26,13 @@ export class CheckOutPage extends BaseSwagLabPage {
         await this.continueBtn.click();
     }
 
-    async calculateTotalAmount(checkOutCartItem) {
+    async calculateTotalAmount() {
         let totalSum = 0;
-        for (const item of await checkOutCartItem.all()) {
+        for (const price of await this.itemPrice.all()) {
             const counterIds = 0;
-            const eachItem = await item.nth(counterIds).textContent();
-            const price = parseFloat(eachItem.replace('$', '').trim());
-            totalSum += price;
+            const itemDataToText = await price.nth(counterIds).textContent();
+            const textPriceToNumber = parseFloat(itemDataToText.replace('$', '').trim());
+            totalSum += textPriceToNumber;
         }
         const orderTax = (totalSum * 0.08).toFixed(2);
         const total = (totalSum + parseFloat(orderTax));

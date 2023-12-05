@@ -3,7 +3,9 @@ const { BaseSwagLabPage } = require('./BaseSwagLab.page');
 export class ShopingCartPage extends BaseSwagLabPage {
     url = '/cart.html';
 
-    get removeItemSelector () { return this.page.locator('[id^="remove"]')}
+    cartItemSelector = '.cart_item_label';
+
+    removeItemSelector = '[id^="remove"]';
 
     get cartIcon() { return this.page.locator('#shopping_cart_container')}
 
@@ -20,7 +22,7 @@ export class ShopingCartPage extends BaseSwagLabPage {
     get cartItemPrice() { return this.page.locator('.cart_item_label').locator('.inventory_item_price')}
 
     // async below added to show the function returns a promise
-    async getCartItemByName(name) { return this.page.locator(this.cartItems, { hasText: name }); }
+    async getCartItemByName(name) { return this.page.locator(this.cartItemSelector, { hasText: name }); }
 
     async removeCartItemByName(name) {
         const item = await this.getCartItemByName(name);
@@ -47,9 +49,10 @@ export class ShopingCartPage extends BaseSwagLabPage {
         return await this.cartItemPrice.nth(id).textContent();
     };
 
-    async getAllTextDataCartItems(cartItemsList){
+    async getAllTextDataCartItems(){
         const addedCartItems = []
-        for(let i = 0; i < cartItemsList.length; i++){
+        const itemsInCart = await this.cartItems.all();
+        for(let i = 0; i < itemsInCart.length; i++){
             addedCartItems.push({
                 name: await this.getNameCartItemById(i),
                 desc: await this.getDescriptionCartItemById(i),

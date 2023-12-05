@@ -53,7 +53,7 @@ test.describe('Swag Labs purchase flow', () => {
             ? await inventoryPage.getAllTitleOfProducts()
             : await inventoryPage.getAllPriceOfProducts())
 
-            const expectedResult = await option.getExpectedResult(actualResult)
+            const expectedResult = option.getExpectedResult(actualResult)
             expect(actualResult).toEqual(expectedResult)
     })
 }
@@ -63,8 +63,7 @@ test.describe('Swag Labs purchase flow', () => {
         await shopingCartPage.openShoppingCart();
 
         await test.step('Should products are displayed correctly', async () => {
-            const itemsInCart = await shopingCartPage.cartItems.all();
-            const cartItemsData = await shopingCartPage.getAllTextDataCartItems(itemsInCart);
+            const cartItemsData = await shopingCartPage.getAllTextDataCartItems();
 
             selectedItems.forEach(async (data, index) => {
                 expect(data).toMatchObject(cartItemsData[index]);
@@ -79,17 +78,13 @@ test.describe('Swag Labs purchase flow', () => {
         await shopingCartPage.checkoutBtn.click();
         await checkoutPage.fillingCheckoutForm(faker.person.firstName(), faker.person.lastName(), faker.location.zipCode());
 
-        const itemsInCheckOut = await shopingCartPage.cartItems.all();
-        const checkOutItemsData = await shopingCartPage.getAllTextDataCartItems(itemsInCheckOut);
+        const checkOutItemsData = await shopingCartPage.getAllTextDataCartItems();
         
         selectedItems.forEach(async (data, index) => {
             expect(data).toMatchObject(checkOutItemsData[index]);
         });
 
-
-        const priceList = await checkoutPage.itemPrice;
-
-        const checkOutAmount = await checkoutPage.calculateTotalAmount(priceList);
+        const checkOutAmount = await checkoutPage.calculateTotalAmount();
         const priceTotal = await checkoutPage.priceTotal.textContent();
         expect(`Total: $${checkOutAmount}`).toEqual(priceTotal);
     });

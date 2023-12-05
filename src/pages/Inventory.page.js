@@ -32,21 +32,21 @@ export class InventoryPage extends BaseSwagLabPage {
         await this.sortingBtn.selectOption(sortType);
     };
 
-    async addRandomProducts(amountProducts) {
+    async addRandomProducts(numberOfProducts) {
         const selectedItem = [];
         const addedIds = []
-        const allItemBtn = await this.addItemToCartBtns.all();
+        const allItemBtns = await this.addItemToCartBtns.all();
         
         while (selectedItem.length < amountProducts) {
-            const randomItem = Math.floor(Math.random() * allItemBtn.length);
-            if (!addedIds.includes(randomItem)) {
+            const randomItemId = Math.floor(Math.random() * allItemBtns.length);
+            if (!addedIds.includes(randomItemId)) {
             selectedItem.push({
-                name: await this.getNameItemById(randomItem),
-                desc: await this.getDescriptionItemById(randomItem),
-                price: await this.getPriceItemById(randomItem)
+                name: await this.getNameItemById(randomItemId),
+                desc: await this.getDescriptionItemById(randomItemId),
+                price: await this.getPriceItemById(randomItemId)
             });
-            addedIds.push(randomItem)
-            await this.addItemToCartById(randomItem);
+            addedIds.push(randomItemId)
+            await this.addItemToCartById(randomItemId);
             }
         };
         return selectedItem;
