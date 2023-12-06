@@ -37,7 +37,7 @@ export class InventoryPage extends BaseSwagLabPage {
         const addedIds = []
         const allItemBtns = await this.addItemToCartBtns.all();
         
-        while (selectedItem.length < amountProducts) {
+        while (selectedItem.length < numberOfProducts) {
             const randomItemId = Math.floor(Math.random() * allItemBtns.length);
             if (!addedIds.includes(randomItemId)) {
             selectedItem.push({

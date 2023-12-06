@@ -8,8 +8,11 @@ test.describe('Swag Labs purchase flow', () => {
     test.beforeEach('Pre-login for tests', async ({loginPage, inventoryPage}) => {
             await loginPage.navigate();
             await loginPage.performLogin('standard_user', 'secret_sauce');
-            await expect(inventoryPage.headerTitle).toBeVisible();
-            expect(await inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
+    });
+
+    test('Perform login', async ({ inventoryPage }) => {
+        await expect(inventoryPage.headerTitle).toBeVisible();
+        expect(await inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
     });
 
     test('Add and remove product from the cart', async ({ inventoryPage, shopingCartPage}) => {
