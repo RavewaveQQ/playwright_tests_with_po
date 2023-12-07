@@ -1,16 +1,7 @@
-export class BasePage {
-    url = '';
+import {Page} from '@playwright/test';
 
-    /**
- * @type {Page}
- */
-    page;
-
-    /**
- *
- * @param {*} page
- */
-    constructor(page) {
+export abstract class BasePage {
+    constructor(protected page: Page) {
         this.page = page;
     }
 
@@ -18,7 +9,7 @@ export class BasePage {
     async getUrl() { return this.page.url(); }
 
     async navigate() {
-        await this.page.goto(this.url);
+        await this.page.goto('/');
         await this.page.waitForLoadState('load');
     }
 }
