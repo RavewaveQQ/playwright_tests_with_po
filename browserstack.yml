@@ -1,0 +1,29 @@
+userName: lfsx_PVaQYI
+accessKey: 7bhbk7ejtgv12JG5gwxf
+
+
+projectName: BrowserStack Test
+buildName: browserstack build 
+
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: chrome
+    browserVersion: latest
+  - os: OS X
+    osVersion: Ventura
+    browserName: playwright-webkit
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: playwright-firefox
+    browserVersion: latest
+
+parallelsPerPlatform: 1
+browserstackLocal: true 
+framework: playwright
+source: node-js-playwright-sample-sdk:v1
+debug: false 
+networkLogs: false 
+consoleLogs: errors 
+testObservability: true
