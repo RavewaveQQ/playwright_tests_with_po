@@ -1,9 +1,11 @@
 name: 'BrowserStack Test'
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   ubuntu-job:
     name: 'BrowserStack Test on Ubuntu'
@@ -36,11 +38,11 @@ jobs:
       - name: 'Running test on BrowserStack'
         run: npm run test
       - uses: actions/upload-artifact@v3
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
       - name: 'BrowserStackLocal Stop'
         uses: browserstack/github-actions/setup-local@master
         with:
