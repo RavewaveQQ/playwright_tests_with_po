@@ -1,42 +1,32 @@
 name: Playwright Browserstack Tests
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     env:
       BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           use-npm: true
-
       - name: Install Playwright dependencies
         run: npm install playwright
-
       - name: Install browserstack-playwright plugin
         run: npm install browserstack-playwright
-
       - name: Configure Browserstack
         run: |
           node -p "require('@browserstack/playwright-plugin/lib/config').configure({
             username: process.env.BROWSERSTACK_USER,
             key: process.env.BROWSERSTACK_KEY,
           })"
-
       - name: Run Playwright tests with Browserstack
         run: |
-          npx playwright test --config browserstack.config.js
-
+          npx playwright test --config playwright.config.js
       - name: Upload test results
         uses: actions/upload-artifact@v2
         with:
