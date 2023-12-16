@@ -15,23 +15,23 @@ export class InventoryPage extends BasePage {
     readonly shopingCartBadge: Locator = this.page.locator('.shopping_cart_badge');
 
 
-    async getNumberOfItemsInCart() {
-        return this.shopingCartBadge.textContent();
+    async getNumberOfItemsInCart(): Promise<string | null> {
+        return await this.shopingCartBadge.textContent();
     }
     
-    async addItemToCartById(id:number) {
+    async addItemToCartById(id:number): Promise<void> {
         await this.addItemToCartBtns.nth(id).click();
     };
 
-    async getItemFromCartById(id:number) {
-        this.cartItem.nth(id);
+    async getItemFromCartById(id:number): Promise<Locator> {
+        return this.cartItem.nth(id);
     };
 
-    async switchSorting(sortType: string) {
+    async switchSorting(sortType: string): Promise<void> {
         await this.sortingBtn.selectOption(sortType);
     };
 
-    async addRandomProducts(numberOfProducts: number) {
+    async addRandomProducts(numberOfProducts: number): Promise<object[]> {
         const selectedItem: object[] = [];
         const addedIds: number[] = []
         const allItemBtns = await this.addItemToCartBtns.all();
@@ -51,23 +51,23 @@ export class InventoryPage extends BasePage {
         return selectedItem;
     };
 
-    async getNameItemById(id:number){
+    async getNameItemById(id:number): Promise<string | null> {
         return await this.inventoryItemsName.nth(id).textContent();
     };
 
-    async getDescriptionItemById(id:number){
+    async getDescriptionItemById(id:number): Promise<string | null>{
         return await this.itemDescription.nth(id).textContent();
     };
 
-    async getPriceItemById(id:number){
+    async getPriceItemById(id:number): Promise<string | null>{
         return await this.itemsPrice.nth(id).textContent();
     };
 
-    async getAllTitleOfProducts(){
+    async getAllTitleOfProducts(): Promise<(string | null)[]>{
         const productTitles = await this.inventoryItemsName.all();
         return Promise.all(productTitles.map(async title => await title.textContent()))
     };
-    async getAllPriceOfProducts(){
+    async getAllPriceOfProducts(): Promise<(string | null)[]>{
         const productPrices = await this.itemsPrice.all();
         return Promise.all(productPrices.map(async price => await price.textContent()))
     };

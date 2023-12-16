@@ -9,7 +9,7 @@ type FixtureYet = {
 }
 
 export const test = base.extend<FixtureYet>({
-    app: async ({page}, use) =>{
+    app: async ({page}, use) => {
         const app = new App(page)
         await use(app)
     },

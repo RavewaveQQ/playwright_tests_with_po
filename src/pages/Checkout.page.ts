@@ -13,14 +13,14 @@ export class CheckOutPage extends BasePage {
     readonly priceTotal: Locator = this.page.locator('.summary_total_label'); 
 
     
-    async fillingCheckoutForm(name: string, lastName: string, zipCode: string) {
+    async fillingCheckoutForm(name: string, lastName: string, zipCode: string): Promise<void> {
         await this.firstName.fill(name);
         await this.lastName.fill(lastName);
         await this.postalCode.fill(zipCode);
         await this.continueBtn.click();
     }
 
-    async calculateTotalAmount() {
+    async calculateTotalAmount(): Promise<string> {
         let totalSum = 0;
         for (const price of await this.itemPrice.all()) {
             const counterIds = 0;

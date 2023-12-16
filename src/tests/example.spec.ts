@@ -11,7 +11,7 @@ test.describe('Swag Labs purchase flow', () => {
         expect(await app.inventoryPage.inventoryItems.count()).toBeGreaterThanOrEqual(1);
     });
 
-    test('Add and remove product from the cart', async ({app}) => {
+    test('Add and remove product from the cart', async ({ app }) => {
         await app.inventoryPage.addItemToCartById(0);
         expect(await app.inventoryPage.getNumberOfItemsInCart()).toBe('1');
 
@@ -22,7 +22,7 @@ test.describe('Swag Labs purchase flow', () => {
         await expect(app.shopingCartPage.cartItems).not.toBeAttached();
     });
 
-    test('Should have correct basic sorting list on the Inventory page', async ({ app}) => {
+    test('Should have correct basic sorting list on the Inventory page', async ({ app }) => {
         await test.step('Sorting products list', async () => {
             await app.inventoryPage.sortingBtn.click();
 
@@ -44,7 +44,7 @@ test.describe('Swag Labs purchase flow', () => {
     ];
 
     for (const option of sortingType) {
-        test(`Should correct sorting with type:${option.sortingOption}`, async ({app}) => {
+        test(`Should correct sorting with type:${option.sortingOption}`, async ({ app }) => {
         await app.inventoryPage.sortingBtn.click();
         await app.inventoryPage.switchSorting(option.sortingOption);
 

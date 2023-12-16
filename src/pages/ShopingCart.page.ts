@@ -17,34 +17,36 @@ export class ShopingCartPage extends BasePage {
     readonly cartItemPrice: Locator = this.page.locator('.cart_item_label').locator('.inventory_item_price')
 
     // async below added to show the function returns a promise
-    async getCartItemByName(name: string) { return this.page.locator(this.cartItemSelector, { hasText: name }); }
+    async getCartItemByName(name: string): Promise<Locator> { 
+        return this.page.locator(this.cartItemSelector, { hasText: name }); 
+    };
 
-    async removeCartItemByName(name: string) {
+    async removeCartItemByName(name: string): Promise<Locator> {
         const item = await this.getCartItemByName(name);
         return item.locator(this.removeItemSelector);
     };
 
-    async removeCartItemById(id: number) {
-        await this.cartItems.nth(id).locator(this.removeItemSelector).click();
+    async removeCartItemById(id: number): Promise<void> {
+        return await this.cartItems.nth(id).locator(this.removeItemSelector).click();
     };
 
-    async openShoppingCart() {
-        await this.cartIcon.click();
+    async openShoppingCart(): Promise<void> {
+       return await this.cartIcon.click();
     };
 
-    async getNameCartItemById(id: number){
+    async getNameCartItemById(id: number): Promise<string | null> {
         return await this.cartItemTitle.nth(id).textContent();
     };
 
-    async getDescriptionCartItemById(id: number){
+    async getDescriptionCartItemById(id: number): Promise<string | null> {
         return await this.cartItemDescription.nth(id).textContent();
     };
 
-    async getPriceCartItemById(id: number){
+    async getPriceCartItemById(id: number): Promise<string | null> {
         return await this.cartItemPrice.nth(id).textContent();
     };
 
-    async getAllTextDataCartItems(){
+    async getAllTextDataCartItems(): Promise<object[]> {
         const addedCartItems: object[] = []
         const itemsInCart = await this.cartItems.all();
         for(let i = 0; i < itemsInCart.length; i++){

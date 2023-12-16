@@ -7,7 +7,7 @@ export class LoginPage extends BasePage {
     readonly loginBtn: Locator = this.page.locator('#login-button'); 
 
     
-    async performLogin(userName: string, password: string) {
+    async performLogin(userName: string, password: string): Promise<void> {
         await this.userName.fill(userName);
         await this.password.fill(password);
         await this.loginBtn.click();
