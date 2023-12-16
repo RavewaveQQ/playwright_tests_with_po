@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npx playwright test",
     "test-ui": "npx playwright test --ui",
-    "lint": "npx eslint . --color --fix --quiet"
+    "lint": "npx eslint . --color --fix --quiet",
+    "browserstack": "npx browserstack-node-sdk playwright test"
   },
   "keywords": [],
   "author": "",
